@@ -51,6 +51,13 @@ class MainActivity : AppCompatActivity() {
             // 넘어갈 엑티비티 명 : ResultActivity -> ResultActivity로 넘어가겠다.
             // class.java -> 클래스를 넘겨주겠다.
             val intent = Intent(this, ResultActivity::class.java)
+
+            // intent에 전달하고자 하는 데이터를 담기 -> 전달받은 엑티비티에서 getExtra를 통해 값을 얻을 수 있음
+            // name : 이름 -> 변수명
+            // 실제 전달할 값(변수)
+            intent.putExtra("height", height)
+            intent.putExtra("weight", weight)
+
             // 함수의 인자로 들어가는 intent를 시작
             // manifests에 새로운 엑티비티를 추가해야 함
             startActivity(intent)
