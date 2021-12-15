@@ -1,7 +1,9 @@
 package hyungjun.seo.app.electronic_picture_frame
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -32,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val imageUriList: MutableList<Uri> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,12 +64,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigatePhotos() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        startActivityForResult(intent, 2000)
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -81,6 +78,42 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 //
+            }
+        }
+    }
+
+    private fun navigatePhotos() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 2000)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        when(requestCode) {
+            2000 -> {
+                val selectedImageUri: Uri? = data?.data
+
+                if (selectedImageUri != null) {
+
+                    if (imageUriList.size >= 6) {
+                        Toast.makeText(this, "이미 사진이 꽉 찼습니다.", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    imageUriList.add(selectedImageUri)
+                    imageViewList[imageUriList.size - 1].setImageURI(selectedImageUri)
+                } else {
+                    Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> {
+                Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
